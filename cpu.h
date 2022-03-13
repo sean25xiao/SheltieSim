@@ -11,5 +11,10 @@ public:
     c_cpu(std::string name);
     std::string get_name() { return name; };
     bool set_name(std::string name);
+
+private:
+    void fetch();
+    void decode();
+    void execute();
 };
 #endif
