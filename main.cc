@@ -3,10 +3,15 @@
 
 #include "cpu.h"
 
+using std::cout;
+using std::endl;
+
 int main() {
     c_cpu cpu0("CPU0");
 
-    std::cout << cpu0.get_name() << std::endl;
+    cout << cpu0.get_name() << endl;
+    cpu0.log();
+
 
     return 0;
 }
