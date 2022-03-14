@@ -1,5 +1,7 @@
 #include <iostream>
 #include <string>
+#include <fstream>  // std::ifstream
+#include <bitset>   // std::biset
 #include "cpu.h"
 
 c_cpu::c_cpu()
@@ -14,10 +16,18 @@ c_cpu::c_cpu(std::string input_name)
 
 void c_cpu::reset(void) 
 {
+    // Reset all registers to zeros
     pc = 0;
-    for(int i = 0; i < 32; i++)
+    for (int i = 0; i < 32; i++)
     {
         regs[i] = 0;
+    }
+
+    // Clear all fake mem, and initialize to 0s
+    fake_mem.clear();
+    for (int i = 0; i < 100; i++)
+    {
+        fake_mem.push_back(0);
     }
 };
 
@@ -28,6 +38,60 @@ bool c_cpu::set_name(std::string name) {
 
     return true;
 };
+
+bool c_cpu::readBinFile(const char* filename)
+{
+    std::streampos fileSize;
+    std::ifstream  in_file(filename, std::ios::binary);
+    if (!in_file)
+    {
+        std::cerr << "Error: Binary File Opened Fail" << endl;
+        return false;
+    }
+
+    // get its size
+    in_file.seekg(0, std::ios::end); // Set the pos to the end
+    fileSize = in_file.tellg(); // Returns the position of the current char
+    in_file.seekg(0, std::ios::beg); // Set the pos to the beginning
+
+    // read the data
+    //std::vector<BYTE> binData(fileSize);
+    in_file.read((char*) &fake_mem[0], fileSize);
+    return true;
+}
+
+uint32_t c_cpu::fetch()
+{
+    bool read_success;
+    read_success = readBinFile("./obj/add-addi.bin");
+    if (!read_success)
+    {
+        std::cerr << "Error: readBinFile failed" << endl;
+        exit(1);
+    }
+
+    for (auto i: fake_mem) {
+        cout << i << endl;
+    }
+
+    uint32_t index = pc;  // pc = 0 in reset
+
+    uint32_t instr =   fake_mem[index]
+                    | (fake_mem[index+1] << 8)
+                    | (fake_mem[index+2] << 16)
+                    | (fake_mem[index+3] << 24);
+
+    std::bitset<32> x(instr);
+
+    cout << "fetch(): instruction = " << x << endl;
+
+    return instr;
+}
+
+void c_cpu::run()
+{
+    fetch();
+}
 
 void c_cpu::log(void)
 {

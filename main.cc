@@ -12,6 +12,8 @@ int main() {
     cout << cpu0.get_name() << endl;
     cpu0.log();
 
+    cpu0.run();
+
 
     return 0;
 }
