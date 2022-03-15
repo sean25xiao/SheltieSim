@@ -4,8 +4,6 @@
 #include <string>
 #include <vector>
 
-#define ZERO_REG 0;
-#define XLEN 32;
 typedef unsigned char BYTE;
 
 using std::cout;
@@ -31,10 +29,12 @@ public:
 private:
     bool readBinFile(const char* filename); // A helper function to read binary file
     uint32_t fetch();
-    void decode();
+    void decode(const uint32_t instr);
     void execute();
 
     void reset(void);
 };
+
+uint32_t bits_extract(const uint32_t data, const uint32_t begin, const uint32_t end);
 
 #endif

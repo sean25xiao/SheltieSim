@@ -3,6 +3,7 @@
 #include <fstream>  // std::ifstream
 #include <bitset>   // std::biset
 #include "cpu.h"
+#include "encoding.h"
 
 c_cpu::c_cpu()
     :name{"None"} {
@@ -70,10 +71,6 @@ uint32_t c_cpu::fetch()
         exit(1);
     }
 
-    for (auto i: fake_mem) {
-        cout << i << endl;
-    }
-
     uint32_t index = pc;  // pc = 0 in reset
 
     uint32_t instr =   fake_mem[index]
@@ -88,9 +85,29 @@ uint32_t c_cpu::fetch()
     return instr;
 }
 
+void c_cpu::decode(const uint32_t instr)
+{
+    cout << "decode(): decode starts" << endl;
+
+    uint32_t opcode = bits_extract(instr, 0, 6);
+    std::bitset<7> x(opcode);
+
+    cout << "fetch(): instruction = " << x << endl;
+
+    switch (opcode)
+    {
+        case OP_IMM:
+            cout << "decode(): it's I-Type Instruction" << endl;
+            break;
+        default:
+            cout << "decode(): Error, non-instruction type is falled" << endl;
+            break;
+    }
+}
+
 void c_cpu::run()
 {
-    fetch();
+    decode(fetch());
 }
 
 void c_cpu::log(void)
@@ -106,3 +123,12 @@ void c_cpu::log(void)
     cout << "pc = " << pc << endl;
     cout << "=====================" << endl;
 };
+
+uint32_t bits_extract(const uint32_t data, const uint32_t begin, const uint32_t end)
+{
+    uint32_t data_bits;
+    data_bits = data << (XLEN_TOP_BIT - end);
+    data_bits = data_bits >> (XLEN_TOP_BIT - (end - begin));
+
+    return data_bits;
+}
