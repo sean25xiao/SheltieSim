@@ -13,6 +13,7 @@ int main() {
     cpu0.log();
 
     cpu0.run();
+    cpu0.log();
 
 
     return 0;

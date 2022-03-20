@@ -86,7 +86,7 @@ uint32_t c_cpu::fetch()
     return instr;
 }
 
-void c_cpu::decode(const uint32_t instr)
+c_cpu::operand_t c_cpu::decode(const uint32_t instr)
 {
     cout << "decode(): decode starts" << endl;
 
@@ -103,7 +103,9 @@ void c_cpu::decode(const uint32_t instr)
             cout << "decode(): it's I-Type Instruction" << endl;
             operands.rd     = bits_extract(instr, 11, 7);
             operands.rs1    = bits_extract(instr, 19, 15);
+            operands.imm    = bits_extract(instr, 31, 20);
             operands.funct3 = bits_extract(instr, 14, 12);
+            operands.opcode = OP_IMM;
             break;
         default:
             cout << "decode(): Error, non-instruction type is falled" << endl;
@@ -112,16 +114,53 @@ void c_cpu::decode(const uint32_t instr)
 
     std::bitset<5> y(operands.rd);
     cout << "decode(): rd = " << y << endl;
+    std::bitset<5> yy(operands.rs1);
+    cout << "decode(): rs1 = " << yy << endl;
+    std::bitset<12> yyy(operands.imm);
+    cout << "decode(): imm = " << yyy << endl;
+
+    return operands;
 }
 
-void c_cpu::extract_operand(const uint32_t instr)
+void c_cpu::execute(const c_cpu::operand_t operands)
 {
+    uint32_t op1 = 0;
+    uint32_t reg_rs2_val = 0;
+    uint32_t imm;
 
+    switch (operands.opcode)
+    {
+        case OP_IMM:
+            switch(operands.funct3)
+            {
+                case FN_ADDI:
+                        cout << "execute(): ADDI instruction" << endl;
+                        op1 = regs[operands.rs1];
+                        imm = operands.imm;
+                        regs[operands.rd] = execute_addi(op1, imm);
+                    break;
+                default:
+                    break;
+            }
+            break;
+        default:
+            cout << "execute(): Error, non-instruction type is falled" << endl;
+            break;
+    }
+}
+
+uint32_t c_cpu::execute_addi(const uint32_t op1, const uint32_t imm)
+{
+    cout << "execute_addi(): " << op1 << " + " << imm << " = " << (op1 + imm) << endl;
+    return (op1 + imm);
 }
 
 void c_cpu::run()
 {
-    decode(fetch());
+    c_cpu::operand_t operands;
+
+    operands = decode(fetch());
+    execute(operands);
 }
 
 void c_cpu::log(void)

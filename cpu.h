@@ -23,6 +23,7 @@ private:
         uint8_t rs2;
         uint8_t imm;
         uint8_t funct3;
+        uint8_t opcode;
     };
     
 
@@ -40,9 +41,9 @@ public:
 private:
     bool readBinFile(const char* filename); // A helper function to read binary file
     uint32_t fetch();
-    void decode(const uint32_t instr);
-    void extract_operand(const uint32_t instr);
-    void execute();
+    c_cpu::operand_t decode(const uint32_t instr);
+    void execute(const c_cpu::operand_t operands);
+    uint32_t execute_addi(const uint32_t op1, const uint32_t imm);
 
     void reset(void);
 };
