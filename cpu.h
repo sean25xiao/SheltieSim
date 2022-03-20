@@ -15,6 +15,17 @@ private:
     uint32_t regs[32];
     uint32_t pc;
 
+    struct operand_t
+    {
+        /* data */
+        uint8_t rd;
+        uint8_t rs1;
+        uint8_t rs2;
+        uint8_t imm;
+        uint8_t funct3;
+    };
+    
+
     std::vector<BYTE> fake_mem;
 
 public:
@@ -30,11 +41,10 @@ private:
     bool readBinFile(const char* filename); // A helper function to read binary file
     uint32_t fetch();
     void decode(const uint32_t instr);
+    void extract_operand(const uint32_t instr);
     void execute();
 
     void reset(void);
 };
-
-uint32_t bits_extract(const uint32_t data, const uint32_t begin, const uint32_t end);
 
 #endif
