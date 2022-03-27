@@ -126,7 +126,7 @@ void c_cpu::execute(const c_cpu::operand_t operands)
 {
     uint32_t op1 = 0;
     uint32_t reg_rs2_val = 0;
-    uint32_t imm;
+    int s_imm;
 
     switch (operands.opcode)
     {
@@ -136,9 +136,14 @@ void c_cpu::execute(const c_cpu::operand_t operands)
                 case FN_ADDI:
                         cout << "execute(): ADDI instruction" << endl;
                         op1 = regs[operands.rs1];
-                        imm = operands.imm;
-                        regs[operands.rd] = execute_addi(op1, imm);
+                        s_imm = operands.imm;
+                        regs[operands.rd] = execute_addi(op1, s_imm);
                     break;
+                case FN_SLTI:
+                        cout << "execute(): SLTI instruction" << endl;
+                        op1 = regs[operands.rs1];
+                        s_imm = operands.imm;
+                        regs[operands.rd] = execute_slti(op1, s_imm);
                 default:
                     break;
             }
@@ -149,10 +154,16 @@ void c_cpu::execute(const c_cpu::operand_t operands)
     }
 }
 
-uint32_t c_cpu::execute_addi(const uint32_t op1, const uint32_t imm)
+uint32_t c_cpu::execute_addi(const uint32_t op1, const int s_imm)
 {
-    cout << "execute_addi(): " << op1 << " + " << imm << " = " << (op1 + imm) << endl;
-    return (op1 + imm);
+    cout << "execute_addi(): " << op1 << " + " << s_imm << " = " << (op1 + s_imm) << endl;
+    return (op1 + s_imm);
+}
+
+uint32_t c_cpu::execute_slti(const uint32_t op1, const int s_imm)
+{
+    cout << "execute_addi(): " << op1 << " compare with " << s_imm << endl;
+    return (op1 < s_imm) ? 1 : 0;
 }
 
 void c_cpu::run()

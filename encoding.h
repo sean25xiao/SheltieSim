@@ -7,3 +7,4 @@
 
 //funct3 encoding
 #define FN_ADDI 0x0  // 000
+#define FN_SLTI 0x2  // 010

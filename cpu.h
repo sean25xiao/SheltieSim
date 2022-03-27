@@ -21,7 +21,7 @@ private:
         uint8_t rd;
         uint8_t rs1;
         uint8_t rs2;
-        uint8_t imm;
+        int     imm;
         uint8_t funct3;
         uint8_t opcode;
     };
@@ -43,7 +43,8 @@ private:
     uint32_t fetch();
     c_cpu::operand_t decode(const uint32_t instr);
     void execute(const c_cpu::operand_t operands);
-    uint32_t execute_addi(const uint32_t op1, const uint32_t imm);
+    uint32_t execute_addi(const uint32_t op1, const int s_imm);
+    uint32_t execute_slti(const uint32_t op1, const int s_imm);
 
     void reset(void);
 };
