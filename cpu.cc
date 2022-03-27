@@ -6,6 +6,8 @@
 #include "encoding.h"
 #include "helper.h"
 
+#define FAKE_MEM_CAP 1000
+
 c_cpu::c_cpu()
     :name{"None"} {
 
@@ -27,7 +29,7 @@ void c_cpu::reset(void)
 
     // Clear all fake mem, and initialize to 0s
     fake_mem.clear();
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < FAKE_MEM_CAP; i++)
     {
         fake_mem.push_back(0);
     }
@@ -59,18 +61,14 @@ bool c_cpu::readBinFile(const char* filename)
     // read the data
     //std::vector<BYTE> binData(fileSize);
     in_file.read((char*) &fake_mem[0], fileSize);
+    pc_end = (uint32_t)fileSize-4;  // C++ https://www.cplusplus.com/reference/istream/istream/tellg/ it can be converted to/from integral types
+    cout << "pc_end is " << pc_end << endl;
     return true;
 }
 
 uint32_t c_cpu::fetch()
 {
-    bool read_success;
-    read_success = readBinFile("./obj/add-addi.bin");
-    if (!read_success)
-    {
-        std::cerr << "Error: readBinFile failed" << endl;
-        exit(1);
-    }
+    
 
     uint32_t index = pc;  // pc = 0 in reset
 
@@ -168,10 +166,27 @@ uint32_t c_cpu::execute_slti(const uint32_t op1, const int s_imm)
 
 void c_cpu::run()
 {
-    c_cpu::operand_t operands;
+    bool read_success;
+    read_success = readBinFile("./obj/add-addi.bin");
+    if (!read_success)
+    {
+        std::cerr << "Error: readBinFile failed" << endl;
+        exit(1);
+    }
+    
+    while (true) 
+    {
+        if (pc > pc_end) {
+            cout << "Reaches the end of the program, PC = " << (pc - 4) << endl;
+            break;
+        }
 
-    operands = decode(fetch());
-    execute(operands);
+        c_cpu::operand_t operands;
+
+        operands = decode(fetch());
+        execute(operands);
+        pc += 4;
+    }
 }
 
 void c_cpu::log(void)
