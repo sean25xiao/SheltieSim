@@ -3,3 +3,4 @@
 *.log
 obj/
 .vscode
+bin/

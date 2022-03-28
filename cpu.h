@@ -12,6 +12,7 @@ using std::endl;
 class c_cpu {
 private:
     std::string name;
+    std::string binfile;
     uint32_t regs[32];
     uint32_t pc;
     uint32_t pc_end;
@@ -34,13 +35,16 @@ public:
     c_cpu();    // Default Constructor
     c_cpu(std::string name);
     std::string get_name() { return name; };
-    bool set_name(std::string name);
+    bool set_name(const std::string name);
+    void set_binfile(std::string input_file);
+
     void run();
 
     void log();
 
 private:
-    bool readBinFile(const char* filename); // A helper function to read binary file
+    bool getBinFileName();
+    bool readBinFile(const std::string filename); // A helper function to read binary file
     uint32_t fetch();
     c_cpu::operand_t decode(const uint32_t instr);
     void execute(const c_cpu::operand_t operands);

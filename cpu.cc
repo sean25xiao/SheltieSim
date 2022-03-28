@@ -33,6 +33,8 @@ void c_cpu::reset(void)
     {
         fake_mem.push_back(0);
     }
+
+    binfile.clear();
 };
 
 bool c_cpu::set_name(std::string name) {
@@ -43,10 +45,24 @@ bool c_cpu::set_name(std::string name) {
     return true;
 };
 
-bool c_cpu::readBinFile(const char* filename)
+bool c_cpu::getBinFileName()
+{
+    return true;
+};
+
+void c_cpu::set_binfile(const std::string input_file)
+{
+    if (input_file.empty()) {
+        std::cerr << "set_binfile(): Error! input binary file is NULL" << endl;
+        exit(1);
+    }
+    binfile = input_file;
+};
+
+bool c_cpu::readBinFile(const std::string filename)
 {
     std::streampos fileSize;
-    std::ifstream  in_file(filename, std::ios::binary);
+    std::ifstream  in_file(filename.c_str(), std::ios::binary);
     if (!in_file)
     {
         std::cerr << "Error: Binary File Opened Fail" << endl;
@@ -167,7 +183,8 @@ uint32_t c_cpu::execute_slti(const uint32_t op1, const int s_imm)
 void c_cpu::run()
 {
     bool read_success;
-    read_success = readBinFile("./obj/add-addi.bin");
+    //read_success = readBinFile("./obj/add-addi.bin");
+    read_success = readBinFile(binfile);
     if (!read_success)
     {
         std::cerr << "Error: readBinFile failed" << endl;

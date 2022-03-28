@@ -7,6 +7,7 @@ using std::cout;
 using std::endl;
 
 int main() {
+    cout << "======== Test-ADDI ========" << endl;
     c_cpu cpu0("CPU0");
 
     cout << cpu0.get_name() << endl;
@@ -16,6 +17,7 @@ int main() {
     cpu0.run();
     cpu0.log();
 
+    cout << "===========================" << endl;
 
     return 0;
 }
