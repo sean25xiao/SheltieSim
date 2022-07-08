@@ -6,4 +6,6 @@
 
 uint32_t bits_extract(const uint32_t data, const uint32_t begin, const uint32_t end);
 
+int sign_extend();
+
 #endif

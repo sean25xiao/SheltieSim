@@ -84,8 +84,6 @@ bool c_cpu::readBinFile(const std::string filename)
 
 uint32_t c_cpu::fetch()
 {
-    
-
     uint32_t index = pc;  // pc = 0 in reset
 
     uint32_t instr =   fake_mem[index]
@@ -132,6 +130,7 @@ c_cpu::operand_t c_cpu::decode(const uint32_t instr)
     cout << "decode(): rs1 = " << yy << endl;
     std::bitset<12> yyy(operands.imm);
     cout << "decode(): imm = " << yyy << endl;
+    cout << "decode(): imm (in int) = " << operands.imm << endl;
 
     return operands;
 }
