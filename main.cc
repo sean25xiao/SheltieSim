@@ -16,6 +16,9 @@ int main() {
     cpu0.run();
     cpu0.log();
 
+    c_cache cache0("ICACHE0");
+    cout << cache0.get_name() << endl;
+
 
     return 0;
 }
